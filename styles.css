@@ -1,6 +1,12 @@
-* {
-  padding: 0;
-  margin: 0;
+h1 {
+  font-family: Arial;
+  text-align: center;
+  font-size: 60px;
+}
+
+p {
+  font-family: sans-serif;
+  text-align: center;
 }
 
 canvas {
