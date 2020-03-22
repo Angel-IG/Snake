@@ -76,6 +76,55 @@ class Snake {
       [4, yMiddle]
     ];
   }
+
+  oppositeDirection() {
+    switch (this.direction) {
+      case UP:
+        return DOWN;
+        break;
+      case DOWN:
+        return UP;
+        break;
+      case LEFT:
+        return RIGHT;
+        break;
+      case RIGHT:
+        return LEFT;
+        break;
+    }
+  }
+
+  move(nextDir) {
+    if (nextDir == this.oppositeDirection()) {
+      var futureDir = this.direction; // With 'var' because of scope
+    } else {
+      var futureDir = nextDir; // With 'var' because of scope
+    }
+
+    const previousArray = this.array;
+    const prevHead = this.array[this.array.length - 1];
+
+    switch (futureDir) {
+      case UP:
+        this.array[this.array.length - 1] = [prevHead[0], prevHead[1] - 1];
+        break;
+      case DOWN:
+        this.array[this.array.length - 1] = [prevHead[0], prevHead[1] + 1];
+        break;
+      case LEFT:
+        this.array[this.array.length - 1] = [prevHead[0] - 1, prevHead[1]];
+        break;
+      case RIGHT:
+        this.array[this.array.length - 1] = [prevHead[0] + 1, prevHead[1]];
+        break;
+    }
+
+    for (let i = (this.array.length - 2); i >= 0; i--) {
+      this.array[i] = previousArray[i + 1];
+    }
+
+    this.direction = futureDir;
+  }
 }
 
 snake = new Snake();
@@ -83,13 +132,25 @@ snake = new Snake();
 function draw() {
   if (spacePressed) {
     location.reload();
-  }
+  } // All this should be changed
 
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Refresh canvas
+
+  if (upPressed) {
+    snake.move(UP);
+  } else if (downPressed) {
+    snake.move(DOWN);
+  } else if (leftPressed) {
+    snake.move(LEFT);
+  } else if (rightPressed) {
+    snake.move(RIGHT);
+  } else {
+    snake.move(snake.direction);
+  }
 
   for (let i = 0; i < snake.array.length; i++) {
     drawTile(snake.array[i][0], snake.array[i][1], SNAKE_COL);
   }
 }
 
-setInterval(draw, 10); // Second argument may be changed
+setInterval(draw, 300); // Second argument may be changed
