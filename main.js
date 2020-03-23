@@ -25,6 +25,73 @@ const RIGHT = 3;
 const SNAKE_COL = "#3c9e31";
 const APPLE_COL = "#eb2f2f";
 
+class Snake {
+  constructor() {
+    const yMiddle = Math.floor(N / 2);
+
+    this.direction = RIGHT;
+    this.array = [
+      [1, yMiddle],
+      [2, yMiddle],
+      [3, yMiddle],
+      [4, yMiddle]
+    ];
+  }
+
+  oppositeDirection() {
+    switch (this.direction) {
+      case UP:
+        return DOWN;
+        break;
+      case DOWN:
+        return UP;
+        break;
+      case LEFT:
+        return RIGHT;
+        break;
+      case RIGHT:
+        return LEFT;
+        break;
+    }
+  }
+
+  move(nextDir) {
+    let futureDir;
+
+    if (nextDir == this.oppositeDirection()) {
+      futureDir = this.direction;
+    } else {
+      futureDir = nextDir;
+    }
+
+    const previousArray = this.array;
+    const prevHead = this.array[this.array.length - 1];
+
+    switch (futureDir) {
+      case UP:
+        this.array[this.array.length - 1] = [prevHead[0], prevHead[1] - 1];
+        break;
+      case DOWN:
+        this.array[this.array.length - 1] = [prevHead[0], prevHead[1] + 1];
+        break;
+      case LEFT:
+        this.array[this.array.length - 1] = [prevHead[0] - 1, prevHead[1]];
+        break;
+      case RIGHT:
+        this.array[this.array.length - 1] = [prevHead[0] + 1, prevHead[1]];
+        break;
+    }
+
+    for (let i = (this.array.length - 2); i >= 0; i--) {
+      this.array[i] = previousArray[i + 1];
+    }
+
+    this.direction = futureDir;
+  }
+}
+
+snake = new Snake();
+
 document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
@@ -64,70 +131,6 @@ function drawTile(x, y, color) {
   ctx.closePath();
 }
 
-class Snake {
-  constructor() {
-    const yMiddle = Math.floor(N / 2);
-
-    this.direction = RIGHT;
-    this.array = [
-      [1, yMiddle],
-      [2, yMiddle],
-      [3, yMiddle],
-      [4, yMiddle]
-    ];
-  }
-
-  oppositeDirection() {
-    switch (this.direction) {
-      case UP:
-        return DOWN;
-        break;
-      case DOWN:
-        return UP;
-        break;
-      case LEFT:
-        return RIGHT;
-        break;
-      case RIGHT:
-        return LEFT;
-        break;
-    }
-  }
-
-  move(nextDir) {
-    if (nextDir == this.oppositeDirection()) {
-      var futureDir = this.direction; // With 'var' because of scope
-    } else {
-      var futureDir = nextDir; // With 'var' because of scope
-    }
-
-    const previousArray = this.array;
-    const prevHead = this.array[this.array.length - 1];
-
-    switch (futureDir) {
-      case UP:
-        this.array[this.array.length - 1] = [prevHead[0], prevHead[1] - 1];
-        break;
-      case DOWN:
-        this.array[this.array.length - 1] = [prevHead[0], prevHead[1] + 1];
-        break;
-      case LEFT:
-        this.array[this.array.length - 1] = [prevHead[0] - 1, prevHead[1]];
-        break;
-      case RIGHT:
-        this.array[this.array.length - 1] = [prevHead[0] + 1, prevHead[1]];
-        break;
-    }
-
-    for (let i = (this.array.length - 2); i >= 0; i--) {
-      this.array[i] = previousArray[i + 1];
-    }
-
-    this.direction = futureDir;
-  }
-}
-
-snake = new Snake();
 
 function draw() {
   if (spacePressed) {
