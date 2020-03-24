@@ -25,6 +25,16 @@ const RIGHT = 3;
 const SNAKE_COL = "#3c9e31";
 const APPLE_COL = "#eb2f2f";
 
+const TILES = function() {
+  let result = [];
+  for (let i = 0; i < N; i++) {
+    for (let j = 0; j < N; j++) {
+      result.push([i, j]);
+    }
+  }
+  return result;
+}(); // 'TILES' is actually a variable: it's an array with all coordinates
+
 class Snake {
   constructor() {
     const yMiddle = Math.floor(N / 2);
@@ -36,6 +46,10 @@ class Snake {
       [3, yMiddle],
       [4, yMiddle]
     ];
+    this.apple = {
+      changePos: true,
+      position: undefined,
+    }
   }
 
   oppositeDirection() {
@@ -64,7 +78,13 @@ class Snake {
       futureDir = nextDir;
     }
 
-    const previousArray = this.array;
+    const previousArray = JSON.parse(JSON.stringify(this.array));
+
+    // The bug was in the previous line: I was copying a reference to
+    // 'this.array', so that when I changed or did some stuff with
+    // 'previousArray', I was changing 'this.array'. So this is fixed
+    // with Deep Copy.
+
     const prevHead = this.array[this.array.length - 1];
 
     switch (futureDir) {
@@ -87,6 +107,16 @@ class Snake {
     }
 
     this.direction = futureDir;
+  }
+
+  updateApple() {
+    if (this.apple.changePos) {
+      const appleArray = TILES.filter(x => !this.array.includes(x));
+      this.apple.position = appleArray[Math.floor(Math.random() * appleArray.length)];
+    }
+    this.apple.changePos = false;
+    // 'Snake.apple.changePos' will be changed to 'true' when the snake eats
+    // the apple.
   }
 }
 
@@ -131,7 +161,6 @@ function drawTile(x, y, color) {
   ctx.closePath();
 }
 
-
 function draw() {
   if (spacePressed) {
     location.reload();
@@ -154,6 +183,9 @@ function draw() {
   for (let i = 0; i < snake.array.length; i++) {
     drawTile(snake.array[i][0], snake.array[i][1], SNAKE_COL);
   }
+
+  snake.updateApple();
+  drawTile(snake.apple.position[0], snake.apple.position[1], APPLE_COL);
 }
 
 setInterval(draw, 300); // Second argument may be changed
