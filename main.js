@@ -9,6 +9,8 @@ let ctx = canvas.getContext('2d');
 const N = 20; // Tiles for each row. It may be changed
 const T = canvas.width / N; // Tile length
 
+let score = 0;
+
 let spacePressed = false;
 let upPressed = false;
 let downPressed = false;
@@ -34,6 +36,14 @@ const TILES = function() {
   }
   return result;
 }(); // 'TILES' is actually a variable: it's an array with all coordinates
+
+function validCoord(coord) {
+  if (coord[0] < 0 || coord[0] >= N || coord[1] < 0 || coord[1] >= N) {
+    return false;
+  } else {
+    return true;
+  }
+}
 
 class Snake {
   constructor() {
@@ -87,6 +97,7 @@ class Snake {
 
     const prevHead = this.array[this.array.length - 1];
 
+    // Moving head
     switch (futureDir) {
       case UP:
         this.array[this.array.length - 1] = [prevHead[0], prevHead[1] - 1];
@@ -102,21 +113,46 @@ class Snake {
         break;
     }
 
+    if (!validCoord(this.array[this.array.length - 1])) {
+      gameOver();
+      return undefined;
+    }
+
+    // Moving the rest of the body
     for (let i = (this.array.length - 2); i >= 0; i--) {
       this.array[i] = previousArray[i + 1];
     }
 
     this.direction = futureDir;
+
+    // Checking if the apple has been eaten
+    if (this.apple.position == this.array[this.array.length - 1]) {
+      score++;
+      this.apple.changePos = true;
+    }
+
+    // Now we have to search if the coordinates of the
+    // head are duplicated in 'this.array'. If so, then
+    // a collision has occured and the snake is dead.
+
+    for (let i = 0; i < (this.array.length - 1); i++) {
+      if (this.array[i] == this.array[this.array.length - 1]) {
+        gameOver();
+        return undefined;
+      }
+    }
   }
 
   updateApple() {
     if (this.apple.changePos) {
+      // Set difference:
       const appleArray = TILES.filter(x => !this.array.includes(x));
       this.apple.position = appleArray[Math.floor(Math.random() * appleArray.length)];
     }
+
     this.apple.changePos = false;
-    // 'Snake.apple.changePos' will be changed to 'true' when the snake eats
-    // the apple.
+    // 'Snake.apple.changePos' will be changed to 'true'
+    // when the snake eats the apple.
   }
 }
 
@@ -188,4 +224,10 @@ function draw() {
   drawTile(snake.apple.position[0], snake.apple.position[1], APPLE_COL);
 }
 
-setInterval(draw, 300); // Second argument may be changed
+let intervalID = setInterval(draw, 300); // Second argument may be changed
+
+function gameOver() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height); // Refresh canvas
+  clearInterval(intervalID);
+  alert("Game over"); // For testing
+}
