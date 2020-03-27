@@ -37,7 +37,25 @@ const TILES = function() {
   return result;
 }(); // 'TILES' is actually a variable: it's an array with all coordinates
 
+function arraysAreEqual(arr1, arr2) {
+  // This function solves the apple and the collisions bugs
+  if (!arr1 || !arr2) {
+    return false;
+  } else if (arr1.length == arr2.length) {
+    for (let i = 0; i < arr1.length; i++) {
+      if (arr1[i] != arr2[i]) {
+        return false;
+      }
+    }
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function validCoord(coord) {
+  // This function is used for checking if the snake
+  // has touched the border, so that it has to die.
   if (coord[0] < 0 || coord[0] >= N || coord[1] < 0 || coord[1] >= N) {
     return false;
   } else {
@@ -56,6 +74,10 @@ class Snake {
       [3, yMiddle],
       [4, yMiddle]
     ];
+    this.prevTail = [0, yMiddle];
+    // The previous property is the tile which will be
+    // part of the snake if it eats an apple on the
+    // current frame.
     this.apple = {
       changePos: true,
       position: undefined,
@@ -124,10 +146,12 @@ class Snake {
     }
 
     this.direction = futureDir;
+    this.prevTail = previousArray[0];
 
     // Checking if the apple has been eaten
-    if (this.apple.position == this.array[this.array.length - 1]) {
+    if (arraysAreEqual(this.apple.position, this.array[this.array.length - 1])) {
       score++;
+      this.array.unshift(this.prevTail); // Grow by one tile
       this.apple.changePos = true;
     }
 
@@ -136,7 +160,7 @@ class Snake {
     // a collision has occured and the snake is dead.
 
     for (let i = 0; i < (this.array.length - 1); i++) {
-      if (this.array[i] == this.array[this.array.length - 1]) {
+      if (arraysAreEqual(this.array[i], this.array[this.array.length - 1])) {
         gameOver();
         return undefined;
       }
@@ -224,7 +248,7 @@ function draw() {
   drawTile(snake.apple.position[0], snake.apple.position[1], APPLE_COL);
 }
 
-let intervalID = setInterval(draw, 300); // Second argument may be changed
+let intervalID = setInterval(draw, 120); // Second argument may be changed
 
 function gameOver() {
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Refresh canvas
