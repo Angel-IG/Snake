@@ -25,6 +25,7 @@ const RIGHT = 3;
 
 // Colors
 const SNAKE_COL = "#3c9e31";
+const STROKE_COL = "#204d10";
 const APPLE_COL = "#eb2f2f";
 
 const TILES = function() {
@@ -171,6 +172,7 @@ class Snake {
     if (this.apple.changePos) {
       // Set difference:
       const appleArray = TILES.filter(x => !this.array.includes(x));
+      // The previous line is failing
       this.apple.position = appleArray[Math.floor(Math.random() * appleArray.length)];
     }
 
@@ -221,6 +223,14 @@ function drawTile(x, y, color) {
   ctx.closePath();
 }
 
+function strokeTile(x, y, color) {
+  ctx.beginPath();
+  ctx.rect(T * x, T * y, T, T);
+  ctx.strokeStyle = color;
+  ctx.stroke();
+  ctx.closePath();
+}
+
 function draw() {
   if (spacePressed) {
     location.reload();
@@ -242,6 +252,7 @@ function draw() {
 
   for (let i = 0; i < snake.array.length; i++) {
     drawTile(snake.array[i][0], snake.array[i][1], SNAKE_COL);
+    strokeTile(snake.array[i][0], snake.array[i][1], STROKE_COL);
   }
 
   snake.updateApple();
