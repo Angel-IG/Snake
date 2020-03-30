@@ -259,10 +259,7 @@ function draw() {
   drawTile(snake.apple.position[0], snake.apple.position[1], APPLE_COL);
 }
 
-let intervalID = setInterval(draw, 120); // Second argument may be changed
-
 function gameOver() {
   ctx.clearRect(0, 0, canvas.width, canvas.height); // Refresh canvas
-  clearInterval(intervalID);
   alert("Game over"); // For testing
 }
