@@ -48,3 +48,9 @@ button:hover {
   border-color: #200434;
   background-color: #a415fb;
 }
+
+canvas {
+  background: #000;
+  display: block;
+  margin: 0 auto;
+}
