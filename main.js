@@ -9,13 +9,15 @@ let ctx = canvas.getContext('2d');
 const N = 20; // Tiles for each row. It may be changed
 const T = canvas.width / N; // Tile length
 
+let gameIsOver = false;
 let score = 0;
 
-let spacePressed = false;
 let upPressed = false;
 let downPressed = false;
 let rightPressed = false;
 let leftPressed = false;
+let spacePressed = false;
+let enterPressed = false;
 
 // Directions
 const UP = 0;
@@ -190,6 +192,8 @@ document.addEventListener("keyup", keyUpHandler, false);
 function keyDownHandler(e) {
   if (e.keyCode == 32) {
     spacePressed = true;
+  } else if (e.keyCode == 13) {
+    enterPressed = true;
   } else if (e.keyCode == 38) {
     upPressed = true;
   } else if (e.keyCode == 40) {
@@ -204,6 +208,8 @@ function keyDownHandler(e) {
 function keyUpHandler(e) {
   if (e.keyCode == 32) {
     spacePressed = false;
+  } else if (e.keyCode == 13) {
+    enterPressed = false;
   } else if (e.keyCode == 38) {
     upPressed = false;
   } else if (e.keyCode == 40) {
@@ -232,34 +238,50 @@ function strokeTile(x, y, color) {
 }
 
 function draw() {
-  if (spacePressed) {
-    location.reload();
-  } // All this should be changed
+  if (!gameIsOver) {
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Refresh canvas
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // Refresh canvas
+    if (upPressed) {
+      snake.move(UP);
+    } else if (downPressed) {
+      snake.move(DOWN);
+    } else if (leftPressed) {
+      snake.move(LEFT);
+    } else if (rightPressed) {
+      snake.move(RIGHT);
+    } else {
+      snake.move(snake.direction);
+    }
 
-  if (upPressed) {
-    snake.move(UP);
-  } else if (downPressed) {
-    snake.move(DOWN);
-  } else if (leftPressed) {
-    snake.move(LEFT);
-  } else if (rightPressed) {
-    snake.move(RIGHT);
-  } else {
-    snake.move(snake.direction);
+    for (let i = 0; i < snake.array.length; i++) {
+      drawTile(snake.array[i][0], snake.array[i][1], SNAKE_COL);
+      strokeTile(snake.array[i][0], snake.array[i][1], STROKE_COL);
+    }
+
+    snake.updateApple();
+    drawTile(snake.apple.position[0], snake.apple.position[1], APPLE_COL);
   }
-
-  for (let i = 0; i < snake.array.length; i++) {
-    drawTile(snake.array[i][0], snake.array[i][1], SNAKE_COL);
-    strokeTile(snake.array[i][0], snake.array[i][1], STROKE_COL);
-  }
-
-  snake.updateApple();
-  drawTile(snake.apple.position[0], snake.apple.position[1], APPLE_COL);
 }
 
 function gameOver() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height); // Refresh canvas
-  alert("Game over"); // For testing
+  gameIsOver = true;
+
+  // Drawing texts
+  ctx.fillStyle = APPLE_COL;
+  ctx.font = "bold 50px Arial";
+  ctx.fillText("GAME OVER", canvas.width / 6 + 60, canvas.height / 6);
+
+  ctx.fillStyle = "#fff";
+  ctx.font = "bold 40px Arial";
+  ctx.fillText("Score: " + score.toString(), canvas.width / 6 + 120, canvas.height / 6 + 60)
+
+  setInterval(checkKeysAfterGame, 0);
+}
+
+function checkKeysAfterGame() {
+  if (spacePressed) {
+    window.location.reload();
+  } else if (enterPressed) {
+    window.location.href = "index.html";
+  }
 }
