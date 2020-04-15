@@ -269,11 +269,15 @@ function gameOver() {
   // Drawing texts
   ctx.fillStyle = APPLE_COL;
   ctx.font = "bold 50px Arial";
-  ctx.fillText("GAME OVER", canvas.width / 6 + 60, canvas.height / 6);
+  ctx.fillText("GAME OVER", canvas.width / 6 + 60, canvas.height / 6 + 120);
 
   ctx.fillStyle = "#fff";
   ctx.font = "bold 40px Arial";
-  ctx.fillText("Score: " + score.toString(), canvas.width / 6 + 120, canvas.height / 6 + 60)
+  ctx.fillText("Score: " + score.toString(), canvas.width / 6 + 120, canvas.height / 6 + 180)
+
+  ctx.font = "bold 30px Arial";
+  ctx.fillText("Press SPACE to play again or ENTER", canvas.width / 6 - 55, canvas.height / 6 + 240);
+  ctx.fillText("to select another difficulty level.", canvas.width / 6 - 25, canvas.height / 6 + 300);
 
   setInterval(checkKeysAfterGame, 0);
 }
