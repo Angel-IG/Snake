@@ -173,8 +173,15 @@ class Snake {
   updateApple() {
     if (this.apple.changePos) {
       // Set difference:
-      const appleArray = TILES.filter(x => !this.array.includes(x));
-      // The previous line is failing
+      const appleArray = TILES.filter(x => {
+        for (let tile of this.array) {
+          if (arraysAreEqual(tile, x)) {
+            return false;
+          }
+        }
+        return true;
+      });
+
       this.apple.position = appleArray[Math.floor(Math.random() * appleArray.length)];
     }
 
