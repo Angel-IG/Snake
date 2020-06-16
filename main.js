@@ -44,9 +44,9 @@ function arraysAreEqual(arr1, arr2) {
   // This function solves the apple and the collisions bugs
   if (!arr1 || !arr2) {
     return false;
-  } else if (arr1.length == arr2.length) {
+  } else if (arr1.length === arr2.length) {
     for (let i = 0; i < arr1.length; i++) {
-      if (arr1[i] != arr2[i]) {
+      if (arr1[i] !== arr2[i]) {
         return false;
       }
     }
@@ -107,7 +107,7 @@ class Snake {
   move(nextDir) {
     let futureDir;
 
-    if (nextDir == this.oppositeDirection()) {
+    if (nextDir === this.oppositeDirection()) {
       futureDir = this.direction;
     } else {
       futureDir = nextDir;
@@ -197,33 +197,33 @@ document.addEventListener("keydown", keyDownHandler, false);
 document.addEventListener("keyup", keyUpHandler, false);
 
 function keyDownHandler(e) {
-  if (e.keyCode == 32) {
+  if (e.keyCode === 32) {
     spacePressed = true;
-  } else if (e.keyCode == 13) {
+  } else if (e.keyCode === 13) {
     enterPressed = true;
-  } else if (e.keyCode == 38) {
+  } else if (e.keyCode === 38) {
     upPressed = true;
-  } else if (e.keyCode == 40) {
+  } else if (e.keyCode === 40) {
     downPressed = true;
-  } else if (e.keyCode == 39) {
+  } else if (e.keyCode === 39) {
     rightPressed = true;
-  } else if (e.keyCode == 37) {
+  } else if (e.keyCode === 37) {
     leftPressed = true;
   }
 }
 
 function keyUpHandler(e) {
-  if (e.keyCode == 32) {
+  if (e.keyCode === 32) {
     spacePressed = false;
-  } else if (e.keyCode == 13) {
+  } else if (e.keyCode === 13) {
     enterPressed = false;
-  } else if (e.keyCode == 38) {
+  } else if (e.keyCode === 38) {
     upPressed = false;
-  } else if (e.keyCode == 40) {
+  } else if (e.keyCode === 40) {
     downPressed = false;
-  } else if (e.keyCode == 39) {
+  } else if (e.keyCode === 39) {
     rightPressed = false;
-  } else if (e.keyCode == 37) {
+  } else if (e.keyCode === 37) {
     leftPressed = false;
   }
 }
